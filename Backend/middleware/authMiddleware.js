@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 // Middleware to protect routes
-const protect = async (req, resizeBy, next) => {
+const protect = async (req, res, next) => {
   let token;
 
   if (
@@ -15,7 +15,7 @@ const protect = async (req, resizeBy, next) => {
       req.user = await User.findById(decoded.user.id).select("-password"); // Exclude Password
       next();
     } catch (error) {
-      console.log("Token verification failed:", error);
+      console.error("Token verification failed:", error);
       res.status(401).json({ message: "Not Authorized , token failed" });
     }
   } else {
