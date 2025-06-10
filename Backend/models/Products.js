@@ -35,11 +35,11 @@ const productSchema = new mongoose.Schema(
     brand: {
       type: String,
     },
-    size: {
+    sizes: {
       type: [String],
       required: true,
     },
-    color: {
+    colors: {
       type: [String],
       required: true,
     },
@@ -81,9 +81,7 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    tags: {
-      type: [String],
-    },
+    tags: [String],
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -109,6 +107,5 @@ const productSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
 
 module.exports = mongoose.model("Product", productSchema);
