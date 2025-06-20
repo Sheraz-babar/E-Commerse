@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
 import axios from "axios";
+
+// Store url and token in a variable
+const API_URL = `${import.meta.env.VITE_BACKEND_URL}`;
 
 // Retrieve user info and token from localStorage if available
 const userFromStorage = localStorage.getItem("userInfo")
@@ -25,10 +27,7 @@ export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/users/login`,
-        userData
-      );
+      const response = await axios.post(`${API_URL}/api/users/login`, userData);
       localStorage.setItem("userInfo", JSON.stringify(response.data));
       localStorage.setItem("userToken", response.data.token);
 
@@ -45,7 +44,7 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/users/register`,
+        `${API_URL}/api/users/register`,
         userData
       );
       localStorage.setItem("userInfo", JSON.stringify(response.data));

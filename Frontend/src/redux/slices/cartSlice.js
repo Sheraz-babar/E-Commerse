@@ -1,6 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// Store url and token in a variable
+const API_URL = `${import.meta.env.VITE_BACKEND_URL}`;
+const USER_TOKEN = `Bearer ${localStorage.getItem("userToken")}`;
+
 // Helper function to loead cart from locaStorage
 const loadCartFromStorage = () => {
   const storedCart = localStorage.getItem("cart");
@@ -17,12 +21,9 @@ export const fetchCart = createAsyncThunk(
   "cart/fetchCart",
   async ({ userId, guestId }, { rejectWithValue }) => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/cart`,
-        {
-          params: { userId, guestId },
-        }
-      );
+      const response = await axios.get(`${API_URL}/api/cart`, {
+        params: { userId, guestId },
+      });
       return response.data;
     } catch (error) {
       console.error(error);
@@ -39,17 +40,14 @@ export const addToCart = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/cart`,
-        {
-          productId,
-          quantity,
-          size,
-          color,
-          guestId,
-          userId,
-        }
-      );
+      const response = await axios.post(`${API_URL}/api/cart`, {
+        productId,
+        quantity,
+        size,
+        color,
+        guestId,
+        userId,
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -65,17 +63,14 @@ export const updateCartItemQuantity = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/api/cart`,
-        {
-          productId,
-          quantity,
-          guestId,
-          userId,
-          size,
-          color,
-        }
-      );
+      const response = await axios.put(`${API_URL}/api/cart`, {
+        productId,
+        quantity,
+        guestId,
+        userId,
+        size,
+        color,
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -90,7 +85,7 @@ export const removeFromCart = createAsyncThunk(
     try {
       const response = await axios({
         method: "DELETE",
-        url: `${import.meta.env.VITE_BACKEND_URL}/api/cart`,
+        url: `${API_URL}/api/cart`,
         data: { productId, guestId, userId, size, color },
       });
       return response.data;
@@ -106,11 +101,11 @@ export const mergeCart = createAsyncThunk(
   async ({ guestId, user }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/cart/merge`,
+        `${API_URL}/api/cart/merge`,
         { guestId, user },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+            Authorization: USER_TOKEN,
           },
         }
       );
@@ -123,7 +118,7 @@ export const mergeCart = createAsyncThunk(
 
 const cartSlice = createSlice({
   name: "cart",
-  initialStage: {
+  initialState: {
     cart: loadCartFromStorage(),
     loading: false,
     error: null,

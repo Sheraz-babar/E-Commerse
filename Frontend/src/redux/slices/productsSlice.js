@@ -1,6 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// Store url and token in a variable
+const API_URL = `${import.meta.env.VITE_BACKEND_URL}`;
+const USER_TOKEN = `Bearer ${localStorage.getItem("userToken")}`;
+
 // Async Thunk to Fetch products by Collection and optional Filters
 export const fetchProductsByFilters = createAsyncThunk(
   "products/fetchByFilters",
@@ -33,7 +37,7 @@ export const fetchProductsByFilters = createAsyncThunk(
     if (limit) query.append("limit", limit);
 
     const response = await axios.get(
-      `${import.meta.env.VITE_BACKEND_URL}/api/products?${query.toString()}`
+      `${API_URL}/api/products?${query.toString()}`
     );
     return response.data;
   }
@@ -43,9 +47,7 @@ export const fetchProductsByFilters = createAsyncThunk(
 export const fetchProductDetails = createAsyncThunk(
   "products/fetchProductDetails",
   async (id) => {
-    const response = await axios.get(
-      `${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`
-    );
+    const response = await axios.get(`${API_URL}/api/products/${id}`);
     return response.data;
   }
 );
@@ -55,11 +57,11 @@ export const updateProduct = createAsyncThunk(
   "products/updateProduct",
   async (id, productData) => {
     const response = await axios.put(
-      `${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`,
+      `${API_URL}/api/products/${id}`,
       productData,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+          Authorization: USER_TOKEN,
         },
       }
     );
@@ -72,9 +74,7 @@ export const updateProduct = createAsyncThunk(
 export const fetchSimilarProducts = createAsyncThunk(
   "products/fetchSimilarProducts",
   async ({ id }) => {
-    const response = await axios.get(
-      `${import.meta.env.VITE_BACKEND_URL}/api/products/similar/${id}`
-    );
+    const response = await axios.get(`${API_URL}/api/products/similar/${id}`);
     return response.data;
   }
 );
